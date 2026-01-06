@@ -214,6 +214,28 @@
     </div>
   </section>
 
+  <!-- Most Viewed Ads Section -->
+  <section class="content-section">
+    <h2 class="section-title">Meistgesehene Inserate</h2>
+    <div class="cards-container" id="mostviewed-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/ads" class="cta-button-small">Alle Inserate ansehen</a>
+    </div>
+  </section>
+
+  <!-- Most Liked Blogs Section -->
+  <section class="content-section">
+    <h2 class="section-title">Beliebteste Blog-Beitraege</h2>
+    <div class="cards-container" id="blogs-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/blog" class="cta-button-small">Alle Beitraege lesen</a>
+    </div>
+  </section>
+
   <!-- Live Banners Section -->
   <section class="live-banners-section">
     <h2 class="live-banners-title">Aktuelle Werbekunden</h2>
@@ -325,8 +347,46 @@
       }
     }
 
+    // Meistgesehene Inserate
+    async function fetchMostViewedAds() {
+      const container = document.getElementById('mostviewed-container');
+      try {
+        const response = await fetch(`${API_BASE}/api/listings/bestviewed/`);
+        if (!response.ok) throw new Error('Fehler');
+        const ads = await response.json();
+        container.innerHTML = '';
+        ads.slice(0, 4).forEach(ad => {
+          const imageUrl = ad.gallery_listview?.image?.md ? `${API_BASE}/${ad.gallery_listview.image.md}` : 'https://6love.ch/assets/images/6lovepink.svg';
+          const card = document.createElement('div');
+          card.className = 'content-card';
+          card.innerHTML = `<a href="https://6love.ch/${LANG}/ads/detail/${ad.id}/${ad.slug}" class="card-link"><div class="card-image-container"><img src="${imageUrl}" alt="${ad.title}" class="card-image" loading="lazy"></div><div class="card-content"><h3 class="card-title">${ad.title}</h3><div class="card-tags">${ad.address?.city ? `<span class="card-tag">${ad.address.city}</span>` : ''}</div></div></a>`;
+          container.appendChild(card);
+        });
+      } catch (e) { container.innerHTML = '<p class="error-message">Laden fehlgeschlagen</p>'; }
+    }
+
+    // Beliebteste Blogs
+    async function fetchMostLikedBlogs() {
+      const container = document.getElementById('blogs-container');
+      try {
+        const response = await fetch(`${API_BASE}/api/blogs/most-liked/`);
+        if (!response.ok) throw new Error('Fehler');
+        const blogs = await response.json();
+        container.innerHTML = '';
+        blogs.slice(0, 4).forEach(blog => {
+          const imageUrl = blog.gallery_listview?.image?.card ? `${API_BASE}${blog.gallery_listview.image.card}` : 'https://6love.ch/assets/images/6lovepink.svg';
+          const card = document.createElement('div');
+          card.className = 'content-card';
+          card.innerHTML = `<a href="https://6love.ch/${LANG}/blog/${blog.id}/${blog.slug}" class="card-link"><div class="card-image-container"><img src="${imageUrl}" alt="${blog.title}" class="card-image" loading="lazy"></div><div class="card-content"><h3 class="card-title">${blog.title}</h3><div class="card-tags">${blog.tags?.slice(0,2).map(t => `<span class="card-tag">${t.name}</span>`).join('') || ''}</div></div></a>`;
+          container.appendChild(card);
+        });
+      } catch (e) { container.innerHTML = '<p class="error-message">Laden fehlgeschlagen</p>'; }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       fetchPremiumAds();
+      fetchMostViewedAds();
+      fetchMostLikedBlogs();
       fetchLiveBanners();
     });
 
