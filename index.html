@@ -214,6 +214,17 @@
     </div>
   </section>
 
+  <!-- Silver Ads Section -->
+  <section class="content-section">
+    <h2 class="section-title">Silver Inserate</h2>
+    <div class="cards-container" id="silver-ads-container">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="section-cta-small">
+      <a href="https://6love.ch/de/ads" class="cta-button-small">Mehr Silver Inserate</a>
+    </div>
+  </section>
+
   <!-- Most Viewed Ads Section -->
   <section class="content-section">
     <h2 class="section-title">Meistgesehene Inserate</h2>
@@ -385,6 +396,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchPremiumAds();
+      fetchSilverAds();
       fetchMostViewedAds();
       fetchMostLikedBlogs();
       fetchLiveBanners();
